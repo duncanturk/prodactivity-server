@@ -2,6 +2,7 @@
   <configuration default="false" name="ServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="server.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.twoyang.prodactivity.server.ServerApplication" />
+    <option name="VM_PARAMETERS" value="-Ddebug" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />
