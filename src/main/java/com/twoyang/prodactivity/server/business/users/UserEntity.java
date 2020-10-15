@@ -14,7 +14,9 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String identifier, secret;
+    @Column(unique = true)
+    private String identifier;
+    private String secret;
 
     @ElementCollection(targetClass = User.Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

@@ -2,6 +2,7 @@ package com.twoyang.prodactivity.server.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twoyang.prodactivity.server.api.LoginCommand;
+import com.twoyang.prodactivity.server.api.LoginResult;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.val;
@@ -56,8 +57,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             .setExpiration(new Date(System.currentTimeMillis() + TOKEN_TTL)).signWith(SignatureAlgorithm.HS256, SECRET.getBytes())
             .compact();
 
+        val loginResult = new LoginResult(token);
         res.setStatus(HttpServletResponse.SC_OK);
-        res.getWriter().write(token);
+        res.setHeader("Content-Type", "application/json");
+        res.getWriter().write(objectMapper.writeValueAsString(loginResult));
         res.getWriter().flush();
     }
 

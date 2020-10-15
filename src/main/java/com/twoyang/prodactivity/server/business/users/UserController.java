@@ -1,10 +1,8 @@
 package com.twoyang.prodactivity.server.business.users;
 
 import com.twoyang.prodactivity.server.api.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.twoyang.prodactivity.server.api.UserCreation;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser() {
-        return userService.create();
+    public User createUser(@RequestBody UserCreation command) {
+        return userService.create(command);
     }
 }

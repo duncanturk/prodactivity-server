@@ -2,12 +2,14 @@ package com.twoyang.prodactivity.server.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -32,10 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests().antMatchers("/login").permitAll()
             .and()
+            .authorizeRequests().antMatchers(HttpMethod.POST, "/users").permitAll()
+            .and()
             .authorizeRequests().antMatchers("/**").authenticated()
             .and()
             .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(), jwtSecret, jwtTTL), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JWTAuthorizationFilter(authenticationManager(), jwtSecret), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JWTAuthorizationFilter(authenticationManager(), jwtSecret), UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
