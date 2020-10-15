@@ -1,8 +1,10 @@
 package com.twoyang.prodactivity.server.business.users;
 
+import com.twoyang.prodactivity.server.api.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -12,11 +14,11 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private LoginMethod loginMethod = LoginMethod.USERNAME_PASSWORD;
+    private String identifier, secret;
 
-    enum LoginMethod {
-        USERNAME_PASSWORD
-    }
+    @ElementCollection(targetClass = User.Role.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_role")
+    @Column(name = "role")
+    private Set<User.Role> roles = Set.of(User.Role.USER);
 }

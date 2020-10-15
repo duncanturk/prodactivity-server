@@ -1,6 +1,7 @@
 package com.twoyang.prodactivity.server.business.tasks;
 
 import com.twoyang.prodactivity.server.business.categories.CategoryEntity;
+import com.twoyang.prodactivity.server.business.users.UserEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,13 +18,14 @@ public class TaskEntity {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String color;
     @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "tasks")
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        mappedBy = "tasks")
     private List<CategoryEntity> categories = new ArrayList<>();
     private Long interval;
     private Long goal;
+
+    @ManyToOne(optional = false)
+    private UserEntity usr;
 }

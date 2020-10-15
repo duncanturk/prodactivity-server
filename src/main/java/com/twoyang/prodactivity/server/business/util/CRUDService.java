@@ -5,7 +5,7 @@ import java.util.List;
 public interface CRUDService<T, C> {
     T create(C createCommand);
 
-    List<T> getAll();
+    List<T> getAllForUser();
 
     void delete(Long id);
 }

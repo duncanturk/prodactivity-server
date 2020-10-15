@@ -4,8 +4,8 @@ import com.twoyang.prodactivity.server.api.Task;
 import com.twoyang.prodactivity.server.api.TaskCreation;
 import com.twoyang.prodactivity.server.business.booking.BookingEntity;
 import com.twoyang.prodactivity.server.business.booking.BookingRepository;
-import com.twoyang.prodactivity.server.business.categories.CategoryEntity;
 import com.twoyang.prodactivity.server.business.categories.CategoryRepository;
+import com.twoyang.prodactivity.server.business.util.AuthService;
 import com.twoyang.prodactivity.server.business.util.CRUDService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
@@ -19,12 +19,14 @@ public class TaskService implements CRUDService<Task, TaskCreation> {
     private final TaskRepository taskRepository;
     private final CategoryRepository categoryRepository;
     private final BookingRepository bookingRepository;
+    private final AuthService authService;
     private final ModelMapper mapper;
 
-    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository, BookingRepository bookingRepository, ModelMapper mapper) {
+    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository, BookingRepository bookingRepository, AuthService authService, ModelMapper mapper) {
         this.taskRepository = taskRepository;
         this.categoryRepository = categoryRepository;
         this.bookingRepository = bookingRepository;
+        this.authService = authService;
         this.mapper = mapper;
     }
 
@@ -33,13 +35,14 @@ public class TaskService implements CRUDService<Task, TaskCreation> {
         val entity = mapper.map(command, TaskEntity.class);
         val cats = command.getCategories().stream().map(categoryRepository::getOne).collect(Collectors.toList());
         cats.forEach(cat -> cat.getTasks().add(entity));
+        entity.setUsr(authService.userEntity());
         entity.setCategories(cats);
         return map(taskRepository.save(entity));
     }
 
     @Override
-    public List<Task> getAll() {
-        return taskRepository.findAll().stream().map(this::map).collect(Collectors.toList());
+    public List<Task> getAllForUser() {
+        return taskRepository.findAllForUser().stream().map(this::map).collect(Collectors.toList());
     }
 
     @Override
@@ -49,7 +52,9 @@ public class TaskService implements CRUDService<Task, TaskCreation> {
 
     private Task map(TaskEntity entity) {
         val task = mapper.map(entity, Task.class);
-        val done = bookingRepository.findByEndTimeGreaterThanAndTask(System.currentTimeMillis() / 1000 - entity.getInterval(), entity).stream().mapToLong(BookingEntity::getAmount).sum();
+        val done = bookingRepository.findByEndTimeGreaterThanAndTask(System.currentTimeMillis() / 1000 - entity.getInterval(), entity).stream()
+            .mapToLong(BookingEntity::getAmount)
+            .sum();
         task.setRemaining(entity.getGoal() - done);
         return task;
     }

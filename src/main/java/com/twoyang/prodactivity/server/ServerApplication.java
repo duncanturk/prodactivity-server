@@ -1,6 +1,5 @@
 package com.twoyang.prodactivity.server;
 
-import com.twoyang.prodactivity.server.api.Booking;
 import com.twoyang.prodactivity.server.business.booking.BookingEntity;
 import com.twoyang.prodactivity.server.business.categories.CategoryEntity;
 import com.twoyang.prodactivity.server.business.tasks.TaskEntity;
@@ -38,10 +37,10 @@ public class ServerApplication {
                 if (!Long.class.isAssignableFrom(Primitives.wrapperFor(destinationType)))
                     return null;
                 Stream<Class<?>> classes = Stream.of(
-                        TaskEntity.class,
-                        UserEntity.class,
-                        CategoryEntity.class,
-                        BookingEntity.class);
+                    TaskEntity.class,
+                    UserEntity.class,
+                    CategoryEntity.class,
+                    BookingEntity.class);
 
                 return classes.anyMatch(clazz -> clazz.isAssignableFrom(sourceType)) ? MatchResult.FULL : MatchResult.PARTIAL;
             }

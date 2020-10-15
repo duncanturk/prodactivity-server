@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class Task {
     private long id;
-    private String name, color;
+    private String name;
     private List<Long> categories;
     private Long interval, goal, remaining;
 }

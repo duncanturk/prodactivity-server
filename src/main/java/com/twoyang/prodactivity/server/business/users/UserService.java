@@ -27,7 +27,7 @@ public class UserService implements CRUDService<User, UserCreation> {
         return mapper.map(userRepository.save(new UserEntity()), User.class);
     }
 
-    public List<User> getAll() {
+    public List<User> getAllForUser() {
         return userRepository.findAll().stream().map(user -> mapper.map(user, User.class)).collect(Collectors.toList());
     }
 

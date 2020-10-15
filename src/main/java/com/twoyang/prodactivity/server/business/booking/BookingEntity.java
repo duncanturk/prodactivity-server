@@ -1,6 +1,7 @@
 package com.twoyang.prodactivity.server.business.booking;
 
 import com.twoyang.prodactivity.server.business.tasks.TaskEntity;
+import com.twoyang.prodactivity.server.business.users.UserEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,8 +14,11 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private TaskEntity task;
 
     private Long amount, endTime;
+
+    @ManyToOne(optional = false)
+    private UserEntity usr;
 }

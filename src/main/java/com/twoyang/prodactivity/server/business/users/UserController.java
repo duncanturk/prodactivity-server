@@ -19,7 +19,7 @@ public class UserController {
 
     @GetMapping("")
     public List<User> getAllUsers() {
-        return userService.getAll();
+        return userService.getAllForUser();
     }
 
     @PostMapping

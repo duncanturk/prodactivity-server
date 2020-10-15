@@ -8,17 +8,17 @@ public interface CRUDController<T, C> {
     CRUDService<T, C> getService();
 
     @GetMapping("")
-    default List<T> getAll(){
-        return getService().getAll();
+    default List<T> getAll() {
+        return getService().getAllForUser();
     }
 
     @PostMapping("")
-    default T create(@RequestBody C create){
+    default T create(@RequestBody C create) {
         return getService().create(create);
     }
 
     @DeleteMapping("{id}")
-    default void delete(@PathVariable Long id){
+    default void delete(@PathVariable Long id) {
         getService().delete(id);
     }
 }

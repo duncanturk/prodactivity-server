@@ -1,11 +1,15 @@
+debug: true
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:15438/prodactivity
-    username: prodactivity
-    password: 8629f4395d1926b35e6cb9ef
-  jpa:
-    hibernate:
-      ddl-auto: update
+    datasource:
+        url: jdbc:postgresql://localhost:15438/prodactivity
+        username: prodactivity
+        password: 8629f4395d1926b35e6cb9ef
+    jpa:
+        hibernate:
+            ddl-auto: update
 server:
-  port: 17394
+    port: 17394
 logging.level.org.hibernate.SQL: DEBUG
+jwt:
+    secret: the-secret
+    ttl: 315360000
