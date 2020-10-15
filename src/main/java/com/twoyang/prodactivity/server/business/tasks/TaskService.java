@@ -4,6 +4,7 @@ import com.twoyang.prodactivity.server.api.Task;
 import com.twoyang.prodactivity.server.api.TaskCreation;
 import com.twoyang.prodactivity.server.business.booking.BookingEntity;
 import com.twoyang.prodactivity.server.business.booking.BookingRepository;
+import com.twoyang.prodactivity.server.business.booking.suggestions.BookingSuggestionService;
 import com.twoyang.prodactivity.server.business.categories.CategoryRepository;
 import com.twoyang.prodactivity.server.business.util.AuthService;
 import com.twoyang.prodactivity.server.business.util.CRUDService;
@@ -20,13 +21,15 @@ public class TaskService implements CRUDService<Task, TaskCreation> {
     private final CategoryRepository categoryRepository;
     private final BookingRepository bookingRepository;
     private final AuthService authService;
+    private final BookingSuggestionService bookingSuggestionService;
     private final ModelMapper mapper;
 
-    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository, BookingRepository bookingRepository, AuthService authService, ModelMapper mapper) {
+    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository, BookingRepository bookingRepository, AuthService authService, BookingSuggestionService bookingSuggestionService, ModelMapper mapper) {
         this.taskRepository = taskRepository;
         this.categoryRepository = categoryRepository;
         this.bookingRepository = bookingRepository;
         this.authService = authService;
+        this.bookingSuggestionService = bookingSuggestionService;
         this.mapper = mapper;
     }
 
@@ -56,6 +59,9 @@ public class TaskService implements CRUDService<Task, TaskCreation> {
             .mapToLong(BookingEntity::getAmount)
             .sum();
         task.setRemaining(entity.getGoal() - done);
+
+        task.setBookingSuggestions(bookingSuggestionService.getSuggestions(entity));
+
         return task;
     }
 }

@@ -10,4 +10,5 @@ public class Task {
     private String name;
     private List<Long> categories;
     private Long interval, goal, remaining;
+    private List<Long> bookingSuggestions;
 }
