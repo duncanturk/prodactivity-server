@@ -26,13 +26,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String SECRET;
-    private final long TOKEN_TTL;
+    private final JWTConfig jwtConfig;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, String secret, long ttl) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTConfig jwtConfig) {
         this.authenticationManager = authenticationManager;
-        this.SECRET = secret;
-        this.TOKEN_TTL = ttl;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
@@ -54,7 +52,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         claims.put("roles", roles);
 
         val token = Jwts.builder().setClaims(claims).setSubject(String.valueOf(auth.getPrincipal()))
-            .setExpiration(new Date(System.currentTimeMillis() + TOKEN_TTL)).signWith(SignatureAlgorithm.HS256, SECRET.getBytes())
+            .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getTtl())).signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret().getBytes())
             .compact();
 
         val loginResult = new LoginResult(token);

@@ -1,6 +1,5 @@
 package com.twoyang.prodactivity.server.config.security;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,13 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationProvider authenticationProvider;
-    @Value("${jwt.secret}")
-    private String jwtSecret;
-    @Value("${jwt.ttl}")
-    private long jwtTTL;
+    private final JWTConfig jwtConfig;
 
-    public SecurityConfig(AuthenticationProvider authenticationProvider) {
+    public SecurityConfig(AuthenticationProvider authenticationProvider, JWTConfig jwtConfig) {
         this.authenticationProvider = authenticationProvider;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
@@ -38,8 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests().antMatchers("/**").authenticated()
             .and()
-            .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(), jwtSecret, jwtTTL), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JWTAuthorizationFilter(authenticationManager(), jwtSecret), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(), jwtConfig), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JWTAuthorizationFilter(authenticationManager(), jwtConfig), UsernamePasswordAuthenticationFilter.class)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

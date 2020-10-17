@@ -18,14 +18,12 @@ import java.io.IOException;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private static final String TOKEN_PREFIX = "Bearer ";
-    private final String SECRET;
-
+    private final JWTConfig jwtConfig;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager, String secret) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager, JWTConfig jwtConfig) {
         super(authManager);
-        this.SECRET = secret;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken buildAuthentication(HttpServletRequest request, String accessToken) {
         try {
-            val claims = Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(accessToken.substring(TOKEN_PREFIX.length())).getBody();
+            val claims = Jwts.parser().setSigningKey(jwtConfig.getSecret().getBytes()).parseClaimsJws(accessToken.substring(JWTConfig.TOKEN_PREFIX.length())).getBody();
             val user = claims.getSubject();
 
             if (user == null)
