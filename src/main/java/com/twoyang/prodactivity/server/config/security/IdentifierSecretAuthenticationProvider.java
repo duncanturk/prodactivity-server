@@ -26,8 +26,8 @@ public class IdentifierSecretAuthenticationProvider implements AuthenticationPro
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        UserEntity userEntity = userRepository.findByIdentifier(
-            authentication.getPrincipal().toString()
+        UserEntity userEntity = userRepository.findByIdentifierAndDisabled(
+            authentication.getPrincipal().toString(), false
         ).orElseThrow(() -> new BadCredentialsException(""));
 
         if (passwordEncoder.matches(authentication.getCredentials().toString(), userEntity.getSecret()))

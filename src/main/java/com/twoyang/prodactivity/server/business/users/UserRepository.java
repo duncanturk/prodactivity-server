@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByIdentifier(String identifier);
+    Optional<UserEntity> findByIdentifierAndDisabled(String identifier, boolean disabled);
 
     boolean existsByIdentifier(String identifier);
 }

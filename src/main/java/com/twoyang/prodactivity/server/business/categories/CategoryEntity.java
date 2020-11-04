@@ -32,6 +32,8 @@ public class CategoryEntity {
     )
     private List<TaskEntity> tasks = new ArrayList<>();
 
+    private boolean disabled = false;
+
     @ManyToOne(optional = false)
     private UserEntity usr;
 }

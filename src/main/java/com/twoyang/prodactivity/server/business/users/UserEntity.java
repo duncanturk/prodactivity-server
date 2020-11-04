@@ -18,6 +18,8 @@ public class UserEntity {
     private String identifier;
     private String secret;
 
+    private boolean disabled = false;
+
     @ElementCollection(targetClass = User.Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role")

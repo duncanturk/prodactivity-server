@@ -9,6 +9,7 @@ import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,9 @@ public class BookingService implements CRUDService<Booking, BookingCreation> {
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        val entity = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        entity.setDisabled(true);
+        repository.save(entity);
     }
 
     private Booking map(BookingEntity entity) {

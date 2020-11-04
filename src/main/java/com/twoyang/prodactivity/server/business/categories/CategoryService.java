@@ -8,17 +8,18 @@ import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class CategoryService implements CRUDService<Category, CategoryCreation> {
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepository repository;
     private final AuthService authService;
     private final ModelMapper mapper;
 
-    public CategoryService(CategoryRepository categoryRepository, AuthService authService, ModelMapper mapper) {
-        this.categoryRepository = categoryRepository;
+    public CategoryService(CategoryRepository repository, AuthService authService, ModelMapper mapper) {
+        this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;
     }
@@ -27,16 +28,18 @@ public class CategoryService implements CRUDService<Category, CategoryCreation> 
     public Category create(CategoryCreation createCommand) {
         val entity = mapper.map(createCommand, CategoryEntity.class);
         entity.setUsr(authService.userEntity());
-        return map(categoryRepository.save(entity));
+        return map(repository.save(entity));
     }
 
     @Override
     public List<Category> getAllForUser() {
-        return categoryRepository.findAllForUser().stream().map(this::map).collect(Collectors.toList());
+        return repository.findAllForUser().stream().map(this::map).collect(Collectors.toList());
     }
 
     public void delete(Long id) {
-        categoryRepository.deleteById(id);
+        val entity = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        entity.setDisabled(true);
+        repository.save(entity);
     }
 
     private Category map(CategoryEntity entity) {

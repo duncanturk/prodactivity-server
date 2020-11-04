@@ -12,20 +12,21 @@ import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TaskService implements CRUDService<Task, TaskCreation> {
-    private final TaskRepository taskRepository;
+    private final TaskRepository repository;
     private final CategoryRepository categoryRepository;
     private final BookingRepository bookingRepository;
     private final AuthService authService;
     private final BookingSuggestionService bookingSuggestionService;
     private final ModelMapper mapper;
 
-    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository, BookingRepository bookingRepository, AuthService authService, BookingSuggestionService bookingSuggestionService, ModelMapper mapper) {
-        this.taskRepository = taskRepository;
+    public TaskService(TaskRepository repository, CategoryRepository categoryRepository, BookingRepository bookingRepository, AuthService authService, BookingSuggestionService bookingSuggestionService, ModelMapper mapper) {
+        this.repository = repository;
         this.categoryRepository = categoryRepository;
         this.bookingRepository = bookingRepository;
         this.authService = authService;
@@ -40,17 +41,19 @@ public class TaskService implements CRUDService<Task, TaskCreation> {
         cats.forEach(cat -> cat.getTasks().add(entity));
         entity.setUsr(authService.userEntity());
         entity.setCategories(cats);
-        return map(taskRepository.save(entity));
+        return map(repository.save(entity));
     }
 
     @Override
     public List<Task> getAllForUser() {
-        return taskRepository.findAllForUser().stream().map(this::map).collect(Collectors.toList());
+        return repository.findAllForUser().stream().map(this::map).collect(Collectors.toList());
     }
 
     @Override
     public void delete(Long id) {
-        taskRepository.deleteById(id);
+        val entity = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        entity.setDisabled(true);
+        repository.save(entity);
     }
 
     private Task map(TaskEntity entity) {

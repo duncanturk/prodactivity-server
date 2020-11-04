@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
-    @PostFilter("filterObject.usr.id == authentication.principal")
+    @PostFilter("filterObject.usr.id == authentication.principal && !filterObject.disabled")
     default List<CategoryEntity> findAllForUser() {
         return findAll();
     }

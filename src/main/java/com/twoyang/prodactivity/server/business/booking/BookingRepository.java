@@ -9,11 +9,11 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
-    @PostFilter("filterObject.usr.id == authentication.principal")
+    @PostFilter("filterObject.usr.id == authentication.principal && !filterObject.disabled")
     default List<BookingEntity> findAllForUser() {
         return findAll();
     }
 
-    @PostFilter("filterObject.usr.id == authentication.principal")
+    @PostFilter("filterObject.usr.id == authentication.principal && !filterObject.disabled")
     List<BookingEntity> findByEndTimeGreaterThanAndTask(Long endTime, TaskEntity task);
 }

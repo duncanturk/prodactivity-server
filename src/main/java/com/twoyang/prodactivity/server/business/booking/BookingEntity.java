@@ -19,6 +19,8 @@ public class BookingEntity {
 
     private Long amount, endTime;
 
+    private boolean disabled = false;
+
     @ManyToOne(optional = false)
     private UserEntity usr;
 }

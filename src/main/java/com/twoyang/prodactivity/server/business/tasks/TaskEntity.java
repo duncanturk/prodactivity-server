@@ -25,6 +25,7 @@ public class TaskEntity {
     private List<CategoryEntity> categories = new ArrayList<>();
     private Long interval;
     private Long goal;
+    private boolean disabled = false;
 
     @ManyToOne(optional = false)
     private UserEntity usr;
